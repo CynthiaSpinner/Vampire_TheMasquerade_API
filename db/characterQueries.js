@@ -6,7 +6,7 @@ const getAllCharacters = async () => {
     const [rows] = await pool.query(`
         SELECT c.*, cl.name as clan_name
         FROM characters c
-        LEFT JOIN clans cl ON c.clan_id =cl.id
+        LEFT JOIN clans cl ON c.clan_id = cl.id
         ORDER BY c.name
         `);
         return rows;
@@ -17,7 +17,7 @@ const getCharacterById = async (id) => {
         SELECT c.*, cl.name as clan_name
         FROM characters c
         LEFT JOIN clans cl ON c.clan_id = cl.id
-        WHETE c.id = ?
+        WHERE c.id = ?
     `, [id]);
 
     if (!charRows[0]) return null;
@@ -32,13 +32,13 @@ const getCharacterById = async (id) => {
     `, [id]);
     character.skills = skills;
 
-    const [discipline] = await pool.query(`
+    const [disciplines] = await pool.query(`
         SELECT d.*, cd.rating, cd.powers
         FROM character_disciplines cd
         INNER JOIN disciplines d ON cd.discipline_id = d.id
         WHERE cd.character_id = ?
     `, [id]);
-    character.discipline = discipline;
+    character.disciplines = disciplines;
 
     const [merits] = await pool.query(`
         SELECT m.*, cm.rating, cm.notes
@@ -139,7 +139,7 @@ const updateCharacter = async (id, characterData) => {
         intelligence, wits, resolve, health_current, willpower_current, humanity, hunger, id
     ]);
 
-    if (result.effectedRows === 0) return null;
+    if (result.affectedRows === 0) return null;
     
     return getCharacterById(id);
 };
