@@ -28,4 +28,4 @@ const testConnection = async () => {
 };
 
 //export for use in other files
-module.exports = { pool, testConnction };
+module.exports = { pool, testConnection };

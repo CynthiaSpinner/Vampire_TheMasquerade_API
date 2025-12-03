@@ -1,4 +1,4 @@
-const { pool } = require('.connection');
+const { pool } = require('./connection');
 
 //log a new request
 const logRequest = async (method, endpoint, statusCode, ipAddress) => {
@@ -16,4 +16,4 @@ const getAllRequestLogs = async () => {
     return rows;
 };
 
-module.exports = { logRequest, getAllRequestlogs };
+module.exports = { logRequest, getAllRequestLogs };
