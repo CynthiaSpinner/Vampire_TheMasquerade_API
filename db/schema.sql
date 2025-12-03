@@ -167,7 +167,42 @@ CREATE TABLE IF NOT EXISTS character_backgrounds (
     FOREIGN KEY (background_id) REFERENCES backgrounds(id) ON DELETE CASCADE
 );
 
--- story sessions (for AI story generation with dice rolls)
+-- sects table
+CREATE TABLE IF NOT EXISTS sects (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    philosophy TEXT,
+    structure TEXT,
+    common_clans JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- locations table
+CREATE TABLE IF NOT EXISTS locations (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50),
+    country VARCHAR(100),
+    description TEXT,
+    prince VARCHAR(100),
+    sect VARCHAR(50),
+    population INT,
+    notable_locations TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- request logs table
+CREATE TABLE IF NOT EXISTS request_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    method VARCHAR(10),
+    endpoint VARCHAR(255),
+    status_code INT,
+    ip_address VARCHAR(45),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- story sessions for ai story generation with dice rolls
 CREATE TABLE IF NOT EXISTS story_sessions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     character_id INT,
