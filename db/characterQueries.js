@@ -1,6 +1,5 @@
 const { pool } = require('./connection');
 
-
 //character queries
 const getAllCharacters = async () => {
     const [rows] = await pool.query(`
@@ -24,6 +23,7 @@ const getCharacterById = async (id) => {
 
     const character = charRows[0];
 
+    //get character skills
     const [skills] = await pool.query(`
         SELECT s.*, cs.rating, cs.specialties
         FROM character_skills cs
@@ -32,6 +32,7 @@ const getCharacterById = async (id) => {
     `, [id]);
     character.skills = skills;
 
+    //get character disciplines
     const [disciplines] = await pool.query(`
         SELECT d.*, cd.rating, cd.powers
         FROM character_disciplines cd
@@ -40,6 +41,7 @@ const getCharacterById = async (id) => {
     `, [id]);
     character.disciplines = disciplines;
 
+    //get character merits
     const [merits] = await pool.query(`
         SELECT m.*, cm.rating, cm.notes
         FROM character_merits cm
@@ -48,6 +50,7 @@ const getCharacterById = async (id) => {
     `, [id]);
     character.merits = merits;
 
+    //get character flaws
     const [flaws] = await pool.query(`
         SELECT f.*, cf.rating, cf.notes
         FROM character_flaws cf
@@ -56,7 +59,7 @@ const getCharacterById = async (id) => {
     `, [id]);
     character.flaws = flaws;
 
-      
+    //get character backgrounds
     const [backgrounds] = await pool.query(`
         SELECT b.*, cb.rating, cb.details
         FROM character_backgrounds cb
@@ -99,6 +102,7 @@ const createCharacter = async (characterData) => {
 
     const characterId = result.insertId;
 
+    //add skills if provided
     if (characterData.skills && Array.isArray(characterData.skills)) {
         for (const skill of characterData.skills) {
             await pool.query(`
@@ -108,6 +112,7 @@ const createCharacter = async (characterData) => {
         }
     }
 
+    //add disciplines if provided
     if (characterData.disciplines && Array.isArray(characterData.disciplines)) {
         for (const disc of characterData.disciplines) {
             await pool.query(`
@@ -141,6 +146,7 @@ const updateCharacter = async (id, characterData) => {
 
     if (result.affectedRows === 0) return null;
     
+    //return updated character with all relationships
     return getCharacterById(id);
 };
 
