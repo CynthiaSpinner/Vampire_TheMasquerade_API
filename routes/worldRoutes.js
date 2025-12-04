@@ -1,5 +1,5 @@
 const express = require('express');
-const router = XPathExpression.Router();
+const router = express.Router();
 const worldQueries = require('../db/worldQueries');
 
 router.get('/clans', async (req, res) => {
@@ -13,14 +13,23 @@ router.get('/clans', async (req, res) => {
 
 router.get('/clans/:id', async (req, res) => {
     try {
-        const clans = await worldQueries.getAllClans();
-        res.json(clans);
+        const clan = await worldQueries.getClanById(req.params.id);
+        res.json(clan);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
 router.get('/disciplines', async (req, res) => {
+    try {
+        const disciplines = await worldQueries.getAllDisciplines();
+        res.json(disciplines);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get('/disciplines/:id', async (req, res) => {
     try {
         const discipline = await worldQueries.getDisciplineById(req.params.id);
 
