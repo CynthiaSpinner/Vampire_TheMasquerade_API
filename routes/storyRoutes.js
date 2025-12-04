@@ -3,6 +3,7 @@ const router = express.Router();
 const storyQueries = require('../db/storyQueries');
 const aiStoryGenerator = require('../services/aiStoryGenerator');
 
+// generating a story bit (hook, scene, etc.)
 router.post('/generate', async (req, res) => {
     try {
         const { type, clan, location, tone, prompt } = req.body;
@@ -13,6 +14,7 @@ router.post('/generate', async (req, res) => {
     }
 });
 
+// starting a new story session
 router.post('/session', async (req, res) => {
     try {
         const { characterId, title, storyContent } = req.body;
@@ -23,6 +25,7 @@ router.post('/session', async (req, res) => {
     }
 });
 
+// grabbing a story session by id
 router.get('/session/:id', async (req, res) => {
     try {
         const session = await storyQueries.getStorySession(req.params.id);
@@ -33,16 +36,17 @@ router.get('/session/:id', async (req, res) => {
     }
 });
 
+// updating session with dice roll + ai
 router.post('/session/:id/dice', async (req, res) => {
     try {
         const { diceRolls, previousStory } = req.body;
         const session = await storyQueries.getStorySession(req.params.id);
 
-        if (!session) return res.status(404).json({ error: 'Session not found'});
+        if (!session) return res.status(404).json({ error: 'Session not found' });
 
         const lastRoll = diceRolls[diceRolls.length - 1];
         const updatedStory = await aiStoryGenerator.generateStory({
-            previousStory: session.story_content,
+            previousStory: previousStory || session.story_content,
             diceResult: lastRoll
         });
 
@@ -58,10 +62,11 @@ router.post('/session/:id/dice', async (req, res) => {
 
         res.json(updated);
     } catch (error) {
-        req.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
+// listing story sessions for a character
 router.get('/character/:characterId', async (req, res) => {
     try {
         const stories = await storyQueries.getCharacterStories(req.params.characterId);
