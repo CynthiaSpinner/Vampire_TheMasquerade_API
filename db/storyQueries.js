@@ -1,11 +1,11 @@
 const { pool } = require('./connection');
 
 //creating a new story session
-const createStorySession = async (getCharacterById, title, storyContent) => {
+const createStorySession = async (characterId, title, storyContent) => {
     const [result] = await pool.query(`
         INSERT INTO story_sessions (character_id, title, story_content, dice_rolls)
         VALUES (?, ?, ?, ?)    
-    `, [getCharacterById, title, storyContent, JSON.stringify([])]);
+    `, [characterId, title, storyContent, JSON.stringify([])]);
     return result.insertId;
 };
 
@@ -16,7 +16,7 @@ const getStorySession = async (id) => {
 };
 
 //updating story with dice roll results
-const updateStoryWithDice = async (id, diceRolls, upatedStory) => {
+const updateStoryWithDice = async (id, diceRolls, updatedStory) => {
     await pool.query(`
         UPDATE story_sessions 
         SET dice_rolls = ?, story_content = ?, current_scene = ? 
@@ -25,12 +25,12 @@ const updateStoryWithDice = async (id, diceRolls, upatedStory) => {
     return getStorySession(id);
 };
 
-//get all stories for a character
+//getting all stories for a character
 const getCharacterStories = async (characterId) => {
     const [rows] = await pool.query(`
-        UPDATE story_sessions 
-        SET dice_rolls = ?, story_content = ?, current_scene = ?
-        WHERE id = ? 
+        SELECT * FROM story_sessions 
+        WHERE character_id = ? 
+        ORDER BY updated_at DESC 
     `, [characterId]);
     return rows;
 };
