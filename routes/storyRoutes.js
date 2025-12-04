@@ -15,7 +15,7 @@ router.post('/generate', async (req, res) => {
 
 router.post('/session', async (req, res) => {
     try {
-        const { characterId, title, storyContent }= req.body;
+        const { characterId, title, storyContent } = req.body;
         const sessionId = await storyQueries.createStorySession(characterId, title, storyContent);
         res.json({ id: sessionId, message: 'Story session created' });
     } catch (error) {
@@ -25,8 +25,8 @@ router.post('/session', async (req, res) => {
 
 router.get('/session/:id', async (req, res) => {
     try {
-        const session = await storyQueries.getCharacterStories(req.params.id);
-        if (!session) return res.status(404).son({ error: 'Session not found' });
+        const session = await storyQueries.getStorySession(req.params.id);
+        if (!session) return res.status(404).json({ error: 'Session not found' });
         res.json(session);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -40,7 +40,7 @@ router.post('/session/:id/dice', async (req, res) => {
 
         if (!session) return res.status(404).json({ error: 'Session not found'});
 
-        const lastRoll = diceRolls[diceRolls.length -1];
+        const lastRoll = diceRolls[diceRolls.length - 1];
         const updatedStory = await aiStoryGenerator.generateStory({
             previousStory: session.story_content,
             diceResult: lastRoll
@@ -58,7 +58,7 @@ router.post('/session/:id/dice', async (req, res) => {
 
         res.json(updated);
     } catch (error) {
-        req.statust(500).json({ error: error.message });
+        req.status(500).json({ error: error.message });
     }
 });
 
