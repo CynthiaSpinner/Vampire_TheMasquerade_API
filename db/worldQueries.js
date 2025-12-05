@@ -20,7 +20,7 @@ const getAllDisciplines = async () => {
 const getDisciplineById = async (id) => {
     const [rows] = await pool.query('SELECT * FROM disciplines WHERE id = ?', [id]);
     return rows[0] || null;
-}
+};
 
 //attribute queries
 const getAllAttributes = async () => {
@@ -43,6 +43,7 @@ const getAllMerits = async () => {
 //flaw queries 
 const getAllFlaws = async () => {
     const [rows] = await pool.query('SELECT * FROM flaws ORDER BY name');
+    return rows;
 };
 
 //background queries
@@ -50,6 +51,29 @@ const getAllBackgrounds = async () => {
     const [rows] = await pool.query('SELECT * FROM backgrounds ORDER BY name');
     return rows;
 };
+
+//sect queries
+const getAllSects = async () => {
+    const [rows] = await pool.query('SELECT * FROM sects ORDER BY name');
+    return rows;
+};
+
+const getSectById = async (id) => {
+    const [rows] = await pool.query('SELECT * FROM sects WHERE id = ?', [id]);
+    return rows[0] || null;
+};
+
+//location queries
+const getAllLocations = async () => {
+    const [rows] = await pool.query('SELECT * FROM locations ORDER BY name');
+    return rows;
+};
+
+const getLocationById = async (id) => {
+    const [rows] = await pool.query('SELECT * FROM locations WHERE id = ?', [id]);
+    return rows[0] || null;
+};
+
 
 module.exports = {
     getAllClans,
@@ -59,5 +83,9 @@ module.exports = {
     getAllSkills,
     getAllMerits,
     getAllFlaws,
-    getAllBackgrounds
+    getAllBackgrounds,
+    getAllSects,
+    getSectById,
+    getAllLocations,
+    getLocationById
 };

@@ -94,5 +94,47 @@ router.get('/backgrounds', async (req, res) => {
     }
 });
 
+//getting all sects for sect selection and reference
+router.get('/sects', async (req, res) => {
+    try {
+        const sects = await worldQueries.getAllSects();
+        res.json(sects);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//getting single sect by id for details view
+router.get('/sects/:id', async (req, res) => {
+    try {
+        const sect = await worldQueries.getSectById(req.params.id);
+        if (!sect) return res.status(404).json({ error: 'Sect not found' });
+        res.json(sect);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//getting all locations for location browser and selection
+router.get('/locations', async (req, res) => {
+    try {
+        const locations = await worldQueries.getAllLocations();
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//getting single location by id for location details
+router.get('/locations/:id', async (req, res) => {
+    try {
+        const location = await worldQueries.getLocationById(req.params.id);
+        if (!location) return res.status(404).json({ error: 'Location not found' });
+        res.json(location);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // expose routes to app
 module.exports = router;
