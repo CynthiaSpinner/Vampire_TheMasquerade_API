@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const storyQueries = require('../db/storyQueries');
+const characterQueries = require('../db/characterQueries');
 const aiStoryGenerator = require('../services/aiStoryGenerator');
 
 /**
@@ -183,15 +184,30 @@ router.get('/session/:id', async (req, res) => {
  */
 router.post('/session/:id/dice', async (req, res) => {
     try {
-        const { diceRolls, previousStory } = req.body;
+        const { diceRolls, previousStory, characterContext } = req.body;
         const session = await storyQueries.getStorySession(req.params.id);
 
         if (!session) return res.status(404).json({ error: 'Session not found' });
 
+        //get character context if not provided
+        let charContext = characterContext;
+        if (!charContext && session.character_id) {
+            const character = await characterQueries.getCharacterById(session.character_id);
+            if (character) {
+                charContext = {
+                    date_of_birth: character.date_of_birth,
+                    place_of_birth: character.place_of_birth,
+                    embrace_date: character.embrace_date,
+                    clan: character.clan_name
+                };
+            }
+        }
+
         const lastRoll = diceRolls[diceRolls.length - 1];
         const updatedStory = await aiStoryGenerator.generateStory({
             previousStory: previousStory || session.story_content,
-            diceResult: lastRoll
+            diceResult: lastRoll,
+            characterContext: charContext
         });
 
         if (!updatedStory.success) {
