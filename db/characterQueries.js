@@ -1,4 +1,5 @@
 const { pool } = require('./connection');
+const { createOriginBackground } = require('./characterHelpers');
 
 //character queries
 const getAllCharacters = async () => {
@@ -195,6 +196,68 @@ const updateCharacter = async (id, characterData) => {
     //updating origin background if date_of_birth or place_of_birth changed
     if (date_of_birth !== undefined || place_of_birth !== undefined) {
         await createOriginBackground(id, date_of_birth, place_of_birth);
+    }
+
+    //updating relationships if provided
+    //delete existing relationships and add new ones
+    if (characterData.skills !== undefined) {
+        await pool.query('DELETE FROM character_skills WHERE character_id = ?', [id]);
+        if (Array.isArray(characterData.skills) && characterData.skills.length > 0) {
+            for (const skill of characterData.skills) {
+                await pool.query(`
+                    INSERT INTO character_skills (character_id, skill_id, rating, specialties)
+                    VALUES (?, ?, ?, ?)
+                `, [id, skill.skill_id, skill.rating || 0, JSON.stringify(skill.specialties || [])]);
+            }
+        }
+    }
+
+    if (characterData.disciplines !== undefined) {
+        await pool.query('DELETE FROM character_disciplines WHERE character_id = ?', [id]);
+        if (Array.isArray(characterData.disciplines) && characterData.disciplines.length > 0) {
+            for (const disc of characterData.disciplines) {
+                await pool.query(`
+                    INSERT INTO character_disciplines (character_id, discipline_id, rating, powers)
+                    VALUES (?, ?, ?, ?)
+                `, [id, disc.discipline_id, disc.rating || 0, JSON.stringify(disc.powers || [])]);
+            }
+        }
+    }
+
+    if (characterData.merits !== undefined) {
+        await pool.query('DELETE FROM character_merits WHERE character_id = ?', [id]);
+        if (Array.isArray(characterData.merits) && characterData.merits.length > 0) {
+            for (const merit of characterData.merits) {
+                await pool.query(`
+                    INSERT INTO character_merits (character_id, merit_id, rating, notes)
+                    VALUES (?, ?, ?, ?)
+                `, [id, merit.merit_id, merit.rating || 1, merit.notes || null]);
+            }
+        }
+    }
+
+    if (characterData.flaws !== undefined) {
+        await pool.query('DELETE FROM character_flaws WHERE character_id = ?', [id]);
+        if (Array.isArray(characterData.flaws) && characterData.flaws.length > 0) {
+            for (const flaw of characterData.flaws) {
+                await pool.query(`
+                    INSERT INTO character_flaws (character_id, flaw_id, rating, notes)
+                    VALUES (?, ?, ?, ?)
+                `, [id, flaw.flaw_id, flaw.rating || 1, flaw.notes || null]);
+            }
+        }
+    }
+
+    if (characterData.backgrounds !== undefined) {
+        await pool.query('DELETE FROM character_backgrounds WHERE character_id = ?', [id]);
+        if (Array.isArray(characterData.backgrounds) && characterData.backgrounds.length > 0) {
+            for (const bg of characterData.backgrounds) {
+                await pool.query(`
+                    INSERT INTO character_backgrounds (character_id, background_id, rating, details)
+                    VALUES (?, ?, ?, ?)
+                `, [id, bg.background_id, bg.rating || 0, bg.details || null]);
+            }
+        }
     }
     
     //returning updated character with all relationships

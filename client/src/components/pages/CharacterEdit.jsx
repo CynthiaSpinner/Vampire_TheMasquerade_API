@@ -275,7 +275,37 @@ function CharacterEdit() {
                 ...formData,
                 ...attrMap,
                 health_current: formData.health_current || characterAttributes.health_current || 3,
-                willpower_current: formData.willpower_current || characterAttributes.willpower_current || 1
+                willpower_current: formData.willpower_current || characterAttributes.willpower_current || 1,
+                //include relationships for full update
+                skills: Object.entries(characterSkills)
+                    .filter(([skillId, rating]) => rating > 0)
+                    .map(([skillId, rating]) => ({
+                        skill_id: parseInt(skillId),
+                        rating: rating,
+                        specialties: [] //can be enhanced later to handle specialties
+                    })),
+                disciplines: Object.entries(characterDisciplines)
+                    .filter(([discId, rating]) => rating > 0)
+                    .map(([discId, rating]) => ({
+                        discipline_id: parseInt(discId),
+                        rating: rating,
+                        powers: [] //can be enhanced later to handle powers
+                    })),
+                merits: selectedMerits.map(meritId => ({
+                    merit_id: parseInt(meritId),
+                    rating: 1,
+                    notes: null
+                })),
+                flaws: selectedFlaws.map(flawId => ({
+                    flaw_id: parseInt(flawId),
+                    rating: 1,
+                    notes: null
+                })),
+                backgrounds: selectedBackgrounds.map(bgId => ({
+                    background_id: parseInt(bgId),
+                    rating: 1,
+                    details: null
+                }))
             };
 
             await characterAPI.update(id, characterData);
