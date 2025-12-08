@@ -1,9 +1,12 @@
 const express = require('express');
 require('dotenv').config();
 
-//import the db functions
+//importing the db functions
 const { testConnection } = require('../db/connection');
 const requestLogQueries = require('../db/requestLogQueries');
+
+//importing swagger
+const { swaggerUi, specs } = require('./swagger');
 
 const worldRoutes = require('../routes/worldRoutes');
 const characterRoutes = require('../routes/characterRoutes');
@@ -40,6 +43,12 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+//swagger route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+    customCss: '.swagger-ui .topbar {display: none}', 
+    customSiteTitle: 'VtM GM API Documentation'
+}));
 
 app.get('/health', async (req, res) => {
     const dbConnected = await testConnection();
