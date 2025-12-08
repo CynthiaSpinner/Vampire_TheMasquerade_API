@@ -92,9 +92,10 @@ router.post('/generate', async (req, res) => {
  */
 router.post('/session', async (req, res) => {
     try {
-        const { characterId, title, storyContent } = req.body;
-        const sessionId = await storyQueries.createStorySession(characterId, title, storyContent);
-        res.json({ id: sessionId, message: 'Story session created' });
+        const { characterId, title, storyContent, timePeriod } = req.body;
+        const sessionId = await storyQueries.createStorySession(characterId, title, storyContent, timePeriod);
+        const session = await storyQueries.getStorySession(sessionId);
+        res.status(201).json(session);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
