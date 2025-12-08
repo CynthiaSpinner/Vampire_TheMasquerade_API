@@ -4,18 +4,56 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Vampire: The Masquerade color palette */
+    --vtm-black: #0a0a0a;
+    --vtm-dark: #1a1a1a;
+    --vtm-gray: #2a2a2a;
+    --vtm-light-gray: #3a3a3a;
+    --vtm-white: #e8e8e8;
+    --vtm-off-white: #d0d0d0;
+    --vtm-red: #8b0000;
+    --vtm-bright-red: #cc0000;
+    --vtm-dark-red: #5a0000;
+    --vtm-crimson: #dc143c;
+    --vtm-shadow: rgba(0, 0, 0, 0.8);
+    --vtm-glow: rgba(139, 0, 0, 0.3);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #1a1a1a;
-    color: #e0e0e0;
+    background-color: var(--vtm-black);
+    color: var(--vtm-white);
     min-height: 100vh;
+    line-height: 1.6;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+        monospace;
+}
+
+/* Base responsive typography */
+h1 {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    color: var(--vtm-bright-red);
+    text-shadow: 2px 2px 4px var(--vtm-shadow);
+}
+
+h2 {
+    font-size: clamp(1.25rem, 3vw, 2.5rem);
+    color: var(--vtm-crimson);
+}
+
+h3 {
+    font-size: clamp(1.1rem, 2.5vw, 2rem);
+    color: var(--vtm-white);
+}
+
+p {
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
 }
