@@ -8,7 +8,7 @@ const options = {
             title: 'Vampire: The Masquerade GM API',
             version: '1.0.0',
             description: 'A comprehensive Game Master API for Vampire: The Masquerade with character management, world information, and AI story generation',
-            constact: {
+            contact: {
                 name: 'API Support'
             }
         },
@@ -20,14 +20,14 @@ const options = {
         ],
         tags: [
             { name: 'World', description: 'World information endpoints (clans, disciplines, attributes, etc.)' },
-            { name: 'Characters', description: 'Character, managment endpoints' },
+            { name: 'Characters', description: 'Character management endpoints' },
             { name: 'Stories', description: 'AI story generation and session management' },
             { name: 'Health', description: 'Health check endpoints' }
         ]
     },
-    apis: ['./routes/*.js', './server/index.js']
+    apis: ['../routes/*.js', './index.js']
 };
 
 const specs = swaggerJsdoc(options);
 
-module.export = { swaggerUi, specs };
+module.exports = { swaggerUi, specs };
