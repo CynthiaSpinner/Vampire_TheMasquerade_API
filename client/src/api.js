@@ -23,7 +23,9 @@ export const worldAPI = {
     getSects: () => api.get('/world/sects'),
     getSectById: (id) => api.get(`/world/sects/${id}`),
     getLocations: () => api.get('/world/locations'),
-    getLocationById: (id) => api.get(`/world/locations/${id}`)
+    getLocationById: (id) => api.get(`/world/locations/${id}`),
+    getPredatorTypes: () => api.get('/world/predator-types'),
+    getPredatorTypeById: (id) => api.get(`/world/predator-types/${id}`)
 };
 
 //character api calls

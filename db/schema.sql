@@ -192,6 +192,22 @@ CREATE TABLE IF NOT EXISTS locations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- predator types table
+CREATE TABLE IF NOT EXISTS predator_types (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    free_discipline_id INT,
+    free_skill_id INT,
+    free_background_id INT,
+    free_background_rating INT DEFAULT 1,
+    restrictions TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (free_discipline_id) REFERENCES disciplines(id) ON DELETE SET NULL,
+    FOREIGN KEY (free_skill_id) REFERENCES skills(id) ON DELETE SET NULL,
+    FOREIGN KEY (free_background_id) REFERENCES backgrounds(id) ON DELETE SET NULL
+);
+
 -- request logs table
 CREATE TABLE IF NOT EXISTS request_logs (
     id INT PRIMARY KEY AUTO_INCREMENT,

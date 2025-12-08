@@ -75,6 +75,37 @@ const getLocationById = async (id) => {
 };
 
 
+//predator type queries
+const getAllPredatorTypes = async () => {
+    const [rows] = await pool.query(`
+        SELECT pt.*, 
+               d.name as free_discipline_name,
+               s.name as free_skill_name,
+               b.name as free_background_name
+        FROM predator_types pt
+        LEFT JOIN disciplines d ON pt.free_discipline_id = d.id
+        LEFT JOIN skills s ON pt.free_skill_id = s.id
+        LEFT JOIN backgrounds b ON pt.free_background_id = b.id
+        ORDER BY pt.name
+    `);
+    return rows;
+};
+
+const getPredatorTypeById = async (id) => {
+    const [rows] = await pool.query(`
+        SELECT pt.*, 
+               d.name as free_discipline_name,
+               s.name as free_skill_name,
+               b.name as free_background_name
+        FROM predator_types pt
+        LEFT JOIN disciplines d ON pt.free_discipline_id = d.id
+        LEFT JOIN skills s ON pt.free_skill_id = s.id
+        LEFT JOIN backgrounds b ON pt.free_background_id = b.id
+        WHERE pt.id = ?
+    `, [id]);
+    return rows[0] || null;
+};
+
 module.exports = {
     getAllClans,
     getClanById,
@@ -87,5 +118,7 @@ module.exports = {
     getAllSects,
     getSectById,
     getAllLocations,
-    getLocationById
+    getLocationById,
+    getAllPredatorTypes,
+    getPredatorTypeById
 };

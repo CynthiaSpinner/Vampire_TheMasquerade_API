@@ -76,7 +76,13 @@ INSERT INTO clans (name, description, bane, compulsion, favored_attributes, clan
 ('Tremere', 'Warlocks who practice blood magic and maintain strict hierarchy. Scholars and manipulators.', 'Blood Bond: Cannot break blood bonds, always bound to their sire and clan.', 'Perfectionism: Must succeed at all costs, cannot accept failure gracefully.', 'Mental', '[7, 8, 10]', 'Camarilla'),
 ('Ventrue', 'Nobles and leaders who command respect. Corporate executives and aristocrats.', 'Feeding Restriction: Can only feed from specific types of mortals (e.g., only virgins, only criminals).', 'Arrogance: Must assert dominance when challenged, cannot back down from confrontations.', 'Social', '[3, 8, 9]', 'Camarilla'),
 ('Caitiff', 'Clanless vampires without a clan curse. Outcasts and rebels.', 'None: No clan bane, but also no clan support or identity.', 'Alienation: Feels disconnected from Kindred society, struggles with identity.', 'Any', '[1, 2, 3]', 'Camarilla'),
-('Thin-Blood', 'Weak-blooded vampires of 15th+ generation. Barely Kindred, almost human.', 'Thin Blood: Limited powers, can walk in sunlight, need less blood.', 'Mortality: Struggles with human connections, feels neither human nor Kindred.', 'Any', '[12]', 'Anarch');
+('Thin-Blood', 'Weak-blooded vampires of 15th+ generation. Barely Kindred, almost human.', 'Thin Blood: Limited powers, can walk in sunlight, need less blood.', 'Mortality: Struggles with human connections, feels neither human nor Kindred.', 'Any', '[12]', 'Anarch'),
+('The Ministry', 'Formerly Followers of Set. Corrupters and tempters who spread discord and undermine society. Revere the Egyptian god Set.', 'Serpent''s Bite: Take double damage from sunlight (aggravated damage). More vulnerable to bright light than other Kindred.', 'Temptation: Must corrupt or tempt others when opportunity arises, spreading vice and discord.', 'Social', '[5, 6, 9]', 'Anarch'),
+('Lasombra', 'Shadow manipulators and power brokers. Control darkness and command respect through fear.', 'Bane of Shadows: Cannot be photographed or recorded, appear as shadows in mirrors and cameras.', 'Hubris: Must assert dominance and control, cannot accept being subservient.', 'Social', '[2, 8, 11]', 'Sabbat'),
+('Tzimisce', 'Body-shapers and territorial masters. Transform flesh and command loyalty through fear.', 'Clan Bane: Must sleep with grave soil from their homeland, or suffer penalties.', 'Avarice: Obsessed with possessions and territory, must defend what is theirs.', 'Mental', '[4, 5, 8]', 'Sabbat'),
+('Banu Haqim', 'Assassins and judges who enforce justice. Warriors and scholars of the blood.', 'Blood Addiction: Must make rolls to resist feeding frenzy when smelling blood.', 'Obsession: Fixated on a goal or target, cannot rest until it is achieved.', 'Physical', '[1, 6, 10]', 'Independent'),
+('Ravnos', 'Tricksters and wanderers who live by their wits. Nomads and illusionists.', 'Clan Bane: Must make rolls to resist committing crimes or acts of chaos when stressed.', 'Wanderlust: Cannot stay in one place too long, must move or suffer restlessness.', 'Social', '[4, 6, 9]', 'Independent'),
+('Hecata', 'Death cultists and necromancers. Formerly Giovanni, now a united clan of death-mages.', 'Bane of Death: Cannot create new vampires, only Embrace through special rituals.', 'Obsession: Fixated on death, the dead, or necromancy, cannot ignore opportunities to study it.', 'Mental', '[3, 7, 11]', 'Independent');
 
 -- merits
 INSERT INTO merits (name, description, cost, category, max_rating, restrictions) VALUES
@@ -158,6 +164,60 @@ INSERT INTO sects (name, description, philosophy, structure, common_clans) VALUE
 ('Sabbat', 'Radical sect that embraces the Beast and rejects human morality, preparing for Gehenna', 'Embrace the Beast, destroy the Antediluvians, freedom from the Masquerade, war against the Camarilla', 'Military structure with Bishops and Archbishops, packs instead of coteries', '[2, 9, 10]'),
 ('Anarch', 'Rebels who reject both Camarilla and Sabbat control, seeking freedom from elders', 'Freedom from elders, self-determination, equality among Kindred, reject the Traditions', 'Loose confederations with Barons ruling territories, democratic coteries', '[1, 2, 8, 9]'),
 ('Independent', 'Clans that remain neutral in sect politics', 'Stay out of sect politics, maintain independence, follow own traditions', 'Varies by clan, often loose associations', '[2, 11, 12]');
+
+-- predator types (each gives free dots in disciplines, skills, or backgrounds)
+-- using subqueries to look up IDs by name to avoid foreign key constraint errors
+INSERT INTO predator_types (name, description, free_discipline_id, free_skill_id, free_background_id, free_background_rating, restrictions) VALUES
+('Alleycat', 'Feed from violence and combat, hunting in dangerous areas. Gain a free dot in Potence or Brawl.', 
+    (SELECT id FROM disciplines WHERE name = 'Potence' LIMIT 1), 
+    (SELECT id FROM skills WHERE name = 'Brawl' LIMIT 1), 
+    NULL, NULL, 'Must feed from combat or violence'),
+('Bagger', 'Steal blood from blood banks and hospitals. Gain a free dot in Larceny and Herd.', 
+    NULL, 
+    (SELECT id FROM skills WHERE name = 'Larceny' LIMIT 1), 
+    (SELECT id FROM backgrounds WHERE name = 'Herd' LIMIT 1), 
+    1, 'Requires access to medical facilities'),
+('Blood Leech', 'Feed from other vampires, dangerous and addictive. Gain a free dot in Blood Sorcery or Oblivion.', 
+    (SELECT id FROM disciplines WHERE name = 'Blood Sorcery' LIMIT 1), 
+    NULL, NULL, NULL, 'Must feed from Kindred, risk of blood bond'),
+('Cleaver', 'Feed from family members, maintaining human connections. Gain a free dot in Herd.', 
+    NULL, NULL, 
+    (SELECT id FROM backgrounds WHERE name = 'Herd' LIMIT 1), 
+    1, 'Must maintain family relationships'),
+('Consensualist', 'Feed only from willing donors. Gain a free dot in Herd.', 
+    NULL, NULL, 
+    (SELECT id FROM backgrounds WHERE name = 'Herd' LIMIT 1), 
+    1, 'Must have willing donors'),
+('Farmer', 'Feed from animals, avoiding human contact. Gain a free dot in Animal Ken and Herd.', 
+    (SELECT id FROM disciplines WHERE name = 'Animalism' LIMIT 1), 
+    (SELECT id FROM skills WHERE name = 'Animal Ken' LIMIT 1), 
+    (SELECT id FROM backgrounds WHERE name = 'Herd' LIMIT 1), 
+    1, 'Cannot feed from humans easily'),
+('Osiris', 'Feed from cult members and followers. Gain two free dots in Herd.', 
+    NULL, NULL, 
+    (SELECT id FROM backgrounds WHERE name = 'Herd' LIMIT 1), 
+    2, 'Must maintain cult following'),
+('Sandman', 'Feed from sleeping victims, stealthy approach. Gain a free dot in Obfuscate or Stealth.', 
+    (SELECT id FROM disciplines WHERE name = 'Obfuscate' LIMIT 1), 
+    (SELECT id FROM skills WHERE name = 'Stealth' LIMIT 1), 
+    NULL, NULL, 'Must feed from sleeping mortals'),
+('Scene Queen', 'Feed from groupies and fans at social events. Gain a free dot in Performance and Fame.', 
+    NULL, 
+    (SELECT id FROM skills WHERE name = 'Performance' LIMIT 1), 
+    (SELECT id FROM backgrounds WHERE name = 'Fame' LIMIT 1), 
+    1, 'Must maintain social presence'),
+('Siren', 'Use seduction and charm to feed. Gain a free dot in Presence or Persuasion.', 
+    (SELECT id FROM disciplines WHERE name = 'Presence' LIMIT 1), 
+    (SELECT id FROM skills WHERE name = 'Persuasion' LIMIT 1), 
+    NULL, NULL, 'Must use social manipulation'),
+('Roadside Killer', 'Feed from travelers and hitchhikers. Gain a free dot in Drive.', 
+    NULL, 
+    (SELECT id FROM skills WHERE name = 'Drive' LIMIT 1), 
+    NULL, NULL, 'Must hunt on the road'),
+('Graverobber', 'Feed from the recently dead. Gain a free dot in Larceny.', 
+    NULL, 
+    (SELECT id FROM skills WHERE name = 'Larceny' LIMIT 1), 
+    NULL, NULL, 'Must have access to corpses');
 
 -- locations
 INSERT INTO locations (name, type, country, description, prince, sect, population, notable_locations) VALUES

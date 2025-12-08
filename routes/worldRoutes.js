@@ -359,5 +359,26 @@ router.get('/locations/:id', async (req, res) => {
     }
 });
 
+//getting all predator types for character creation
+router.get('/predator-types', async (req, res) => {
+    try {
+        const predatorTypes = await worldQueries.getAllPredatorTypes();
+        res.json(predatorTypes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//getting single predator type by id for details
+router.get('/predator-types/:id', async (req, res) => {
+    try {
+        const predatorType = await worldQueries.getPredatorTypeById(req.params.id);
+        if (!predatorType) return res.status(404).json({ error: 'Predator type not found' });
+        res.json(predatorType);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // expose routes to app
 module.exports = router;

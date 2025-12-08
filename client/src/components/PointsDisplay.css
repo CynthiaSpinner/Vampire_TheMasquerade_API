@@ -1,0 +1,153 @@
+.points-display {
+    background-color: var(--vtm-dark);
+    border: 2px solid var(--vtm-gray);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.points-display h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--vtm-bright-red);
+    border-bottom: 1px solid var(--vtm-red);
+    padding-bottom: 0.75rem;
+}
+
+.points-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.points-section {
+    background-color: var(--vtm-black);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.points-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.points-label {
+    color: var(--vtm-white);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.points-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+}
+
+.points-value.good {
+    color: #4caf50;
+}
+
+.points-value.warning {
+    color: #ff9800;
+}
+
+.points-value.at-limit {
+    color: var(--vtm-bright-red);
+}
+
+.points-value.over-limit {
+    color: var(--vtm-bright-red);
+    background-color: var(--vtm-dark-red);
+}
+
+.points-bar {
+    width: 100%;
+    height: 20px;
+    background-color: var(--vtm-gray);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.points-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.points-fill.good {
+    background-color: #4caf50;
+}
+
+.points-fill.warning {
+    background-color: #ff9800;
+}
+
+.points-fill.at-limit {
+    background-color: var(--vtm-red);
+}
+
+.points-fill.over-limit {
+    background-color: var(--vtm-bright-red);
+}
+
+.points-remaining {
+    color: var(--vtm-off-white);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.points-note {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Scale down from 2560px */
+@media (max-width: 1920px) {
+    .points-display {
+        padding: 1.25rem;
+    }
+    .points-grid {
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 1440px) {
+    .points-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .points-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .points-display {
+        padding: 1rem;
+    }
+    .points-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .points-section {
+        padding: 0.9rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .points-section {
+        padding: 0.75rem;
+    }
+}
+

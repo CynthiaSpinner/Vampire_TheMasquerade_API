@@ -118,6 +118,14 @@
     font-family: inherit;
 }
 
+.form-helper-text {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
 /* time period helper */
 .time-period-helper {
     background-color: var(--vtm-gray);
@@ -126,6 +134,103 @@
     padding: 1rem;
     margin-top: 1rem;
     grid-column: 1 / -1;
+}
+
+.clan-info-box {
+    background-color: var(--vtm-dark);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    grid-column: 1 / -1;
+}
+
+.clan-description {
+    color: var(--vtm-off-white);
+    margin-bottom: 0.75rem;
+    font-style: italic;
+}
+
+.clan-bane, .clan-compulsion, .clan-disciplines {
+    color: var(--vtm-white);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.clan-bane strong, .clan-compulsion strong, .clan-disciplines strong {
+    color: var(--vtm-bright-red);
+    margin-right: 0.5rem;
+}
+
+/* sect info display */
+.sect-info-display {
+    background-color: var(--vtm-dark);
+    border: 1px solid var(--vtm-light-gray);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+    grid-column: 1 / -1; /* Spans full width in grid */
+}
+
+.sect-info-display h3 {
+    color: var(--vtm-bright-red);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.sect-info-display p {
+    margin-bottom: 0.5rem;
+    color: var(--vtm-off-white);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.sect-info-display p strong {
+    color: var(--vtm-white);
+}
+
+.sect-note {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--vtm-gray);
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.predator-bonus-info {
+    background-color: var(--vtm-dark);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+}
+
+.bonus-label {
+    color: var(--vtm-bright-red);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.bonus-list {
+    color: var(--vtm-white);
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.bonus-list li {
+    margin-bottom: 0.25rem;
+    color: var(--vtm-off-white);
+}
+
+.restriction-note {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--vtm-gray);
 }
 
 .helper-label {

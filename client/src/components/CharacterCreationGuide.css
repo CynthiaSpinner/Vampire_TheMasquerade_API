@@ -1,0 +1,116 @@
+.creation-guide {
+    background-color: var(--vtm-dark);
+    border: 2px solid var(--vtm-gray);
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.guide-toggle {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background-color: var(--vtm-gray);
+    border: none;
+    color: var(--vtm-white);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background-color 0.3s;
+}
+
+.guide-toggle:hover {
+    background-color: var(--vtm-light-gray);
+}
+
+.guide-content {
+    padding: 1.5rem;
+    color: var(--vtm-white);
+}
+
+.guide-content h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--vtm-bright-red);
+    border-bottom: 1px solid var(--vtm-red);
+    padding-bottom: 0.75rem;
+}
+
+.guide-section {
+    margin-bottom: 1.5rem;
+}
+
+.guide-section h4 {
+    color: var(--vtm-crimson);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.guide-section ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--vtm-off-white);
+    line-height: 1.8;
+}
+
+.guide-section li {
+    margin-bottom: 0.5rem;
+}
+
+.guide-section strong {
+    color: var(--vtm-white);
+    font-weight: bold;
+}
+
+/* Scale down from 2560px */
+@media (max-width: 1920px) {
+    .guide-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 1440px) {
+    .guide-content {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .guide-toggle {
+        padding: 0.9rem 1.25rem;
+        font-size: 1rem;
+    }
+    .guide-content {
+        padding: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .guide-toggle {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+    .guide-content {
+        padding: 0.75rem;
+    }
+    .guide-section ul {
+        padding-left: 1.25rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .guide-toggle {
+        padding: 0.65rem 0.9rem;
+        font-size: 0.9rem;
+    }
+    .guide-content {
+        padding: 0.65rem;
+    }
+    .guide-section ul {
+        padding-left: 1rem;
+    }
+}
+
