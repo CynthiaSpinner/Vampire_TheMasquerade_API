@@ -17,7 +17,8 @@ const generateStory = async (options = {}) => {
         tone = 'dark',            // mood/atmosphere, defaulted for the gothic horror setting
         prompt = null,            // an explicit player or system prompt (takes priority if present)
         previousStory = null,     // narrative up until now, for story continuation
-        diceResult = null         // outcome from a dice roll, used to guide next scene
+        diceResult = null,         // outcome from a dice roll, used to guide next scene
+        characterContext = null  //character's date_of_birth, place_of_birth, etc.
     } = options;
 
     // system prompt sets up the ai's role so story output is always on-genre, immersive and fitting for vtm style
@@ -25,6 +26,25 @@ const generateStory = async (options = {}) => {
 
     let userPrompt = '';
 
+    //adding character context if available
+    let characterInfo = '';
+    if (characterContext) {
+        if (characterContext.date_of_birth) {
+            const birthYear = new Date(characterContext.date_of_birth).getFullYear();
+            characterInfo += `Character was born in ${birthYear}`;
+            if (characterContext.place_of_birth) {
+                characterInfo += ` in ${characterContext.place_of_birth}`;
+            }
+            characterInfo += '. ';
+        }
+        if (characterContext.embrace_date) {
+            const embraceYear = new Date(characterContext.embrace_date).getFullYear();
+            characterInfo += `Embraced in ${embraceYear}. `;
+        }
+        if (characterContext.clan) {
+            characterInfo += `Clan: ${characterContext.clan}. `;
+        }
+    }
     // how we build the ai prompt depends on the input - decide what gets sent for best context:
     // first, if we have both dice results and a previous narrative, we’re telling the ai: continue the story and use the mechanical outcome
     if (diceResult && previousStory) {
@@ -32,19 +52,22 @@ const generateStory = async (options = {}) => {
         
         Previous Story: ${previousStory}
 
+        ${characterInfo}
+
         Dice Roll Result: ${diceResult.diceCount} dice, ${diceResult.successes} successes, ${diceResult.difficulty} difficulty
 
         ${diceResult.successes >= diceResult.difficulty ? 'The action succeeded.' : 'The action failed.'}
 
-        Continue the narrative based on this outcome.`;
+        Continue the narrative based on this outcome, considering the character's historical background.`;
     }
     // next, if just a plain prompt is given, feed it right to the ai, letting users override
     else if (prompt) {
-        userPrompt = prompt;
+        userPrompt = `${characterInfo}${prompt}`;
     }
     // if neither, fall back on generating a prompt using config values to ensure something always goes to the ai
     else {
         userPrompt = `Generate a ${type} for Vampire: The Masquerade.
+        ${characterInfo}
         ${clan ? `Clan: ${clan}. ` : ''}
         ${location ? `Location: ${location}. ` : ''}
         Tone: ${tone}.`;
