@@ -1,11 +1,11 @@
 const { pool } = require('./connection');
 
 //creating a new story session
-const createStorySession = async (characterId, title, storyContent) => {
+const createStorySession = async (characterId, title, storyContent, timePeriod = null) => {
     const [result] = await pool.query(`
-        INSERT INTO story_sessions (character_id, title, story_content, dice_rolls)
-        VALUES (?, ?, ?, ?)    
-    `, [characterId, title, storyContent, JSON.stringify([])]);
+        INSERT INTO story_sessions (character_id, title, time_period, story_content, dice_rolls)
+        VALUES (?, ?, ?, ?, ?)    
+    `, [characterId, title, timePeriod, storyContent, JSON.stringify([])]);
     return result.insertId;
 };
 
@@ -34,6 +34,8 @@ const getCharacterStories = async (characterId) => {
     `, [characterId]);
     return rows;
 };
+
+
 
 module.exports = {
     createStorySession,
