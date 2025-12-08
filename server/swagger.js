@@ -1,5 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 
 const options = {
     definition: {
@@ -25,9 +26,16 @@ const options = {
             { name: 'Health', description: 'Health check endpoints' }
         ]
     },
-    apis: ['../routes/*.js', './index.js']
+    apis: [
+        path.join(__dirname, '../routes/*.js'),
+        path.join(__dirname, './index.js')
+    ]
 };
 
 const specs = swaggerJsdoc(options);
+
+//debug: uncomment to see what paths are being scanned
+//console.log('Swagger scanning paths:', options.apis);
+//console.log('Swagger specs paths:', Object.keys(specs.paths || {}));
 
 module.exports = { swaggerUi, specs };
