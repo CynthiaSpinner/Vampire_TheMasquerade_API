@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { characterAPI, worldAPI } from '../api';
+import { getTimePeriodContext } from '../utils/characterHelpers';
 import './CharacterCreator.css';
+
 
 function CharacterCreator() {
     const navigate = useNavigate();
@@ -19,7 +21,13 @@ function CharacterCreator() {
         desire: '',
         chronicle_tenets: '',
         touchstones: '',
-        notes: ''
+        notes: '',
+        date_of_birth: '',   
+        place_of_birth: '',      
+        embrace_date: '',        
+        sire: '',                
+        apparent_age: '',        
+        true_age: ''      
     });
 
     //world data
@@ -226,6 +234,9 @@ function CharacterCreator() {
         Mental: skills.filter(s => s.category === 'Mental')
     };
 
+    //computing time period context for helper display
+    const timePeriodContext = getTimePeriodContext(formData.date_of_birth, formData.place_of_birth);
+
     return (
         <div className="character-creator">
             <div className="creator-header">
@@ -347,6 +358,67 @@ function CharacterCreator() {
                             />
                         </div>
                     </div>
+                </section>
+
+                {/* Birth Information Section */}
+                <section className="form-section">
+                   <h2>Birth Information</h2>
+                   <div className="form-grid">
+                       <div className="form-group">
+                           <label htmlFor="date_of_birth">Date of Birth</label>
+                           <input
+                               type="date"
+                               id="date_of_birth"
+                               name="date_of_birth"
+                               value={formData.date_of_birth}
+                               onChange={handleInputChange}
+                           />
+                       </div>
+
+                       <div className="form-group">
+                           <label htmlFor="place_of_birth">Place of Birth</label>
+                           <input
+                               type="text"
+                               id="place_of_birth"
+                               name="place_of_birth"
+                               value={formData.place_of_birth}
+                               onChange={handleInputChange}
+                               placeholder="e.g., London, England"
+                           />
+                       </div>
+
+                       <div className="form-group">
+                           <label htmlFor="embrace_date">Embrace Date</label>
+                           <input
+                               type="date"
+                               id="embrace_date"
+                               name="embrace_date"
+                               value={formData.embrace_date}
+                               onChange={handleInputChange}
+                           />
+                       </div>
+
+                       <div className="form-group">
+                           <label htmlFor="sire">Sire</label>
+                           <input
+                               type="text"
+                               id="sire"
+                               name="sire"
+                               value={formData.sire}
+                               onChange={handleInputChange}
+                               placeholder="Name of the vampire who embraced you"
+                           />
+                       </div>
+                   </div>
+
+                   {/* helper text showing time period context */}
+                   {timePeriodContext && (
+                       <div className="time-period-helper">
+                           <p className="helper-label">Historical Context:</p>
+                           <p className="helper-text">{timePeriodContext}</p>
+                           <p className="helper-note">Use this information to craft your character's background story</p>
+                       </div>
+                   )}
                 </section>
 
                 {/* Attributes Section */}
