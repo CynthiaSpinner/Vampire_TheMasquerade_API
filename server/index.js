@@ -50,6 +50,27 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customSiteTitle: 'VtM GM API Documentation'
 }));
 
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: API and database status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 database:
+ *                   type: string
+ *                   example: connected
+ */
 app.get('/health', async (req, res) => {
     const dbConnected = await testConnection();
     res.json({

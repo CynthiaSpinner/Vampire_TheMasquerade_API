@@ -3,7 +3,47 @@ const router = express.Router();
 const storyQueries = require('../db/storyQueries');
 const aiStoryGenerator = require('../services/aiStoryGenerator');
 
-// generating a story bit (hook, scene, etc.)
+/**
+ * @swagger
+ * /api/stories/generate:
+ *   post:
+ *     summary: Generate an AI story
+ *     tags: [Stories]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 example: hook
+ *               clan:
+ *                 type: string
+ *                 example: Toreador
+ *               location:
+ *                 type: string
+ *                 example: New York
+ *               tone:
+ *                 type: string
+ *                 example: dark
+ *               prompt:
+ *                 type: string
+ *                 example: A mysterious figure approaches
+ *     responses:
+ *       200:
+ *         description: Story generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 content:
+ *                   type: string
+ */
 router.post('/generate', async (req, res) => {
     try {
         const { type, clan, location, tone, prompt } = req.body;
@@ -14,7 +54,42 @@ router.post('/generate', async (req, res) => {
     }
 });
 
-// starting a new story session
+/**
+ * @swagger
+ * /api/stories/session:
+ *   post:
+ *     summary: Create a new story session
+ *     tags: [Stories]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - characterId
+ *               - title
+ *               - storyContent
+ *             properties:
+ *               characterId:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               storyContent:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Story session created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ */
 router.post('/session', async (req, res) => {
     try {
         const { characterId, title, storyContent } = req.body;
@@ -25,7 +100,29 @@ router.post('/session', async (req, res) => {
     }
 });
 
-// grabbing a story session by id
+/**
+ * @swagger
+ * /api/stories/session/{id}:
+ *   get:
+ *     summary: Get a story session by ID
+ *     tags: [Stories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Session ID
+ *     responses:
+ *       200:
+ *         description: Story session details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StorySession'
+ *       404:
+ *         description: Session not found
+ */
 router.get('/session/:id', async (req, res) => {
     try {
         const session = await storyQueries.getStorySession(req.params.id);
@@ -36,7 +133,53 @@ router.get('/session/:id', async (req, res) => {
     }
 });
 
-// updating session with dice roll + ai
+/**
+ * @swagger
+ * /api/stories/session/{id}/dice:
+ *   post:
+ *     summary: Update story session with dice roll results
+ *     tags: [Stories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Session ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - diceRolls
+ *             properties:
+ *               diceRolls:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     diceCount:
+ *                       type: integer
+ *                     successes:
+ *                       type: integer
+ *                     difficulty:
+ *                       type: integer
+ *               previousStory:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Story updated with dice results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StorySession'
+ *       404:
+ *         description: Session not found
+ *       500:
+ *         description: AI generation error
+ */
 router.post('/session/:id/dice', async (req, res) => {
     try {
         const { diceRolls, previousStory } = req.body;
@@ -66,7 +209,29 @@ router.post('/session/:id/dice', async (req, res) => {
     }
 });
 
-// listing story sessions for a character
+/**
+ * @swagger
+ * /api/stories/character/{characterId}:
+ *   get:
+ *     summary: Get all story sessions for a character
+ *     tags: [Stories]
+ *     parameters:
+ *       - in: path
+ *         name: characterId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Character ID
+ *     responses:
+ *       200:
+ *         description: List of story sessions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/StorySession'
+ */
 router.get('/character/:characterId', async (req, res) => {
     try {
         const stories = await storyQueries.getCharacterStories(req.params.characterId);
