@@ -187,18 +187,21 @@ function StoryGenerator() {
         try {
             const diceData = {
                 diceRolls: [...diceRolls, currentDiceRoll],
-                previousStory: generatedStory || selectedStory.story_content
+                previousStory: generatedStory || selectedStory.story_content,
+                characterContext: selectedCharacter ? {
+                    date_of_birth: selectedCharacter.date_of_birth,
+                    place_of_birth: selectedCharacter.place_of_birth,
+                    embrace_date: selectedCharacter.embrace_date,
+                    clan: selectedCharacter.clan_name
+                } : null
             };
 
             const response = await storyAPI.updateWithDice(selectedStory.id, diceData);
             
-            if (response.data.success) {
-                setGeneratedStory(response.data.content);
-                setSelectedStory(response.data);
-                setCurrentDiceRoll(null);
-            } else {
-                setError(response.data.error || 'Failed to continue story');
-            }
+            //backend returns the updated story session directly
+            setGeneratedStory(response.data.story_content);
+            setSelectedStory(response.data);
+            setCurrentDiceRoll(null);
         } catch (err) {
             setError('Failed to continue story: ' + (err.response?.data?.error || err.message));
             console.error(err);
