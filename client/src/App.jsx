@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import 'App.css';
+import './App.css';
 
 //components (may add to it, but this should be the basic components)
 import NavBar from './components/NavBar';
@@ -14,7 +14,7 @@ function App() {
     return (
         <Router>
             <div className='App'>
-                <Navbar />
+                <NavBar />
                 <main className='main-content'>
                     <Routes>
                     <Route path="/" element={<Home />} />

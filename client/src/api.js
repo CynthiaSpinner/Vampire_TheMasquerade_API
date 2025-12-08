@@ -5,14 +5,14 @@ const API_BASE_URL = 'http://localhost:3000/api';
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-        'Conent-Type': 'application/json'
+        'Content-Type': 'application/json'
     }
 });
 
 //world data api calls
 export const worldAPI = {
     getClans: () => api.get('/world/clans'),
-    getClansById: (id) => api.get(`/world/clans/${id}`),
+    getClanById: (id) => api.get(`/world/clans/${id}`),
     getDisciplines: () => api.get('/world/disciplines'),
     getDisciplineById: (id) => api.get(`/world/disciplines/${id}`),
     getAttributes: () => api.get('/world/attributes'),
