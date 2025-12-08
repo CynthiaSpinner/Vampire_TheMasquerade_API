@@ -1,0 +1,216 @@
+.dice-roller {
+    background-color: var(--vtm-black);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+    padding: 1.5rem;
+}
+
+.dice-controls {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.dice-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dice-control-group label {
+    color: var(--vtm-white);
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.dice-control-group input {
+    background-color: var(--vtm-dark);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+    padding: 0.75rem;
+    color: var(--vtm-white);
+    font-size: 1rem;
+    width: 100px;
+    transition: border-color 0.3s;
+}
+
+.dice-control-group input:focus {
+    outline: none;
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 5px var(--vtm-glow);
+}
+
+.btn-roll {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--vtm-red);
+    color: var(--vtm-white);
+    border: 2px solid var(--vtm-bright-red);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-roll:hover:not(:disabled) {
+    background-color: var(--vtm-bright-red);
+    box-shadow: 0 0 10px var(--vtm-glow);
+    transform: translateY(-2px);
+}
+
+.btn-roll:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dice-result {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background-color: var(--vtm-dark);
+    border: 1px solid var(--vtm-gray);
+    border-radius: 4px;
+}
+
+.dice-result h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--vtm-bright-red);
+    font-size: 1.1rem;
+}
+
+.result-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.result-details p {
+    margin: 0;
+    color: var(--vtm-off-white);
+}
+
+.result-details strong {
+    color: var(--vtm-white);
+    margin-right: 0.5rem;
+}
+
+.result-details .success {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.result-details .failure {
+    color: var(--vtm-bright-red);
+    font-weight: bold;
+}
+
+.dice-values {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--vtm-gray);
+}
+
+.dice-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dice-value {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: var(--vtm-dark);
+    border: 2px solid var(--vtm-gray);
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--vtm-white);
+}
+
+.dice-value.success {
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.dice-value.failure {
+    border-color: var(--vtm-gray);
+    color: var(--vtm-off-white);
+}
+
+.dice-value.critical {
+    border-color: var(--vtm-bright-red);
+    background-color: var(--vtm-red);
+    color: var(--vtm-white);
+    box-shadow: 0 0 8px var(--vtm-glow);
+}
+
+/* Scale down from 2560px */
+@media (max-width: 1920px) {
+    .dice-roller {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 1440px) {
+    .dice-controls {
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dice-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .dice-control-group {
+        width: 100%;
+    }
+    .dice-control-group input {
+        width: 100%;
+    }
+    .btn-roll {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .dice-roller {
+        padding: 1rem;
+    }
+    .dice-value {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dice-roller {
+        padding: 0.9rem;
+    }
+    .dice-value {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .dice-roller {
+        padding: 0.75rem;
+    }
+    .dice-value {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 0.8rem;
+    }
+}
+
