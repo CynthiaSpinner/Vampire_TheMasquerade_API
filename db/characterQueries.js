@@ -73,25 +73,28 @@ const getCharacterById = async (id) => {
 
 const createCharacter = async (characterData) => {
     const {
-        name, player_name, chronicle, concept, clan_id, generation, strength, dexterity, stamina, 
-        charisma, manipulation, composure, intelligence, wits, resolve, health_max, health_current, 
+        name, player_name, chronicle, concept, clan_id, generation, 
+        sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
+        strength, dexterity, stamina, 
+        charisma, manipulation, composure, intelligence, wits, resolve, 
+        health_max, health_current, 
         willpower_max, willpower_current, humanity, hunger 
     } = characterData;
 
     const [result] = await pool.query(`
         INSERT INTO characters (
             name, player_name, chronicle, concept,
-            clan_id, generation,
+            clan_id, generation, sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
             strength, dexterity, stamina,
             charisma, manipulation, composure,
             intelligence, wits, resolve,
             health_max, health_current,
             willpower_max, willpower_current,
             humanity, hunger
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,[
         name, player_name, chronicle, concept,
-        clan_id, generation || 13,
+        clan_id, generation || 13, sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
         strength || 1, dexterity || 1, stamina || 1,
         charisma || 1, manipulation || 1, composure || 1,
         intelligence || 1, wits || 1, resolve || 1,
