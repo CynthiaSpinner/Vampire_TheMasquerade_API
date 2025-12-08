@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { characterAPI, worldAPI } from '../api';
+import { characterAPI, worldAPI } from '../../api';
 import { getTimePeriodContext } from '../utils/characterHelpers';
 import './CharacterCreator.css';
 

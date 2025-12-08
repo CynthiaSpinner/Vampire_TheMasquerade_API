@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { characterAPI } from '../api';
+import { characterAPI } from '../../api';
 import { getTimePeriodContext, calculateAge, calculateYearsSinceEmbrace } from '../../utils/characterhelpers';
 import './CharacterDetail.css';
 
