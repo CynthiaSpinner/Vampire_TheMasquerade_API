@@ -130,20 +130,27 @@ const createCharacter = async (characterData) => {
 
 const updateCharacter = async (id, characterData) => {
     const {
-        name, strength, dexterity, stamina, charisma, manipulation, composure, intelligence, wits, resolve, health_current,
+        name, player_name, chronicle, concept, clan_id, generation,
+        sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
+        strength, dexterity, stamina, charisma, manipulation, composure, 
+        intelligence, wits, resolve, health_current,
         willpower_current, humanity, hunger
     } = characterData;
 
     const [result] = await pool.query(`
         UPDATE characters SET
-            name = ?, strength = ?, dexterity = ?, stamina = ?,
+            name = ?, player_name = ?, chronicle = ?, concept = ?, clan_id = ?, generation = ?,
+            sire = ?, embrace_date = ?, date_of_birth = ?, place_of_birth = ?, apparent_age = ?, true_age = ?,
+            strength = ?, dexterity = ?, stamina = ?,
             charisma = ?, manipulation = ?, composure = ?,
             intelligence = ?, wits = ?, resolve = ?,
             health_current = ?, willpower_current = ?,
             humanity = ?, hunger = ?
         WHERE id = ?        
     `, [
-        name, strength, dexterity, stamina, charisma, manipulation, composure,
+        name, player_name, chronicle, concept, clan_id, generation,
+        sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
+        strength, dexterity, stamina, charisma, manipulation, composure,
         intelligence, wits, resolve, health_current, willpower_current, humanity, hunger, id
     ]);
 
