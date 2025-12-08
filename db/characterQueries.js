@@ -105,7 +105,12 @@ const createCharacter = async (characterData) => {
 
     const characterId = result.insertId;
 
-    //add skills if provided
+    //auto-createing origin background from date_of_birth and place_of_birth
+    if (date_of_birth || place_of_birth) {
+        await createOriginBackground(characterId, date_of_birth, place_of_birth);
+    }
+
+    //adding skills if provided
     if (characterData.skills && Array.isArray(characterData.skills)) {
         for (const skill of characterData.skills) {
             await pool.query(`
@@ -115,7 +120,7 @@ const createCharacter = async (characterData) => {
         }
     }
 
-    //add disciplines if provided
+    //adding disciplines if provided
     if (characterData.disciplines && Array.isArray(characterData.disciplines)) {
         for (const disc of characterData.disciplines) {
             await pool.query(`
@@ -124,6 +129,37 @@ const createCharacter = async (characterData) => {
             `, [characterId, disc.discipline_id, disc.rating || 0, JSON.stringify(disc.powers || [])]);
         }
     }
+
+    //adding merits if provided
+    if (characterData.merits && Array.isArray(characterData.merits)) {
+        for (const merit of characterData.merits) {
+            await pool.query(`
+                INSERT INTO character_merits (character_id, merit_id, rating, notes)
+                VALUES (?, ?, ?, ?)
+            `, [characterId, merit.merit_id, merit.rating || 1, merit.notes || null]);
+        }
+    }
+
+    //adding flaws if provided
+    if (characterData.flaws && Array.isArray(characterData.flaws)) {
+        for (const flaw of characterData.flaws) {
+            await pool.query(`
+                INSERT INTO character_flaws (character_id, flaw_id, rating, notes)
+                VALUES (?, ?, ?, ?)
+            `, [characterId, flaw.flaw_id, flaw.rating || 1, flaw.notes || null]);
+        }
+    }
+
+    //adding backgrounds if provided
+    if (characterData.backgrounds && Array.isArray(characterData.backgrounds)) {
+        for (const bg of characterData.backgrounds) {
+            await pool.query(`
+                INSERT INTO character_backgrounds (character_id, background_id, rating, details)
+                VALUES (?, ?, ?, ?)
+            `, [characterId, bg.background_id, bg.rating || 0, bg.details || null]);
+        }
+    }
+    
 
     return getCharacterById(characterId);
 };
@@ -155,8 +191,13 @@ const updateCharacter = async (id, characterData) => {
     ]);
 
     if (result.affectedRows === 0) return null;
+
+    //updating origin background if date_of_birth or place_of_birth changed
+    if (date_of_birth !== undefined || place_of_birth !== undefined) {
+        await createOriginBackground(id, date_of_birth, place_of_birth);
+    }
     
-    //return updated character with all relationships
+    //returning updated character with all relationships
     return getCharacterById(id);
 };
 
