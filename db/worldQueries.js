@@ -54,12 +54,24 @@ const getAllBackgrounds = async () => {
 
 //sect queries
 const getAllSects = async () => {
-    const [rows] = await pool.query('SELECT * FROM sects ORDER BY name');
+    const [rows] = await pool.query(`
+        SELECT s.*, 
+               b.name as free_background_name
+        FROM sects s
+        LEFT JOIN backgrounds b ON s.free_background_id = b.id
+        ORDER BY s.name
+    `);
     return rows;
 };
 
 const getSectById = async (id) => {
-    const [rows] = await pool.query('SELECT * FROM sects WHERE id = ?', [id]);
+    const [rows] = await pool.query(`
+        SELECT s.*, 
+               b.name as free_background_name
+        FROM sects s
+        LEFT JOIN backgrounds b ON s.free_background_id = b.id
+        WHERE s.id = ?
+    `, [id]);
     return rows[0] || null;
 };
 

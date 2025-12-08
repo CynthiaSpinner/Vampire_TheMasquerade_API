@@ -122,6 +122,31 @@ function PointsDisplay({ characterData, attributesData, skillsData, meritsData, 
                         Flaws give extra merit points (max {summary.flaws.maxGain}).
                     </div>
                 </div>
+
+                {/* Backgrounds */}
+                <div className="points-section">
+                    <div className="points-header">
+                        <span className="points-label">Backgrounds</span>
+                        <span className={`points-value ${getStatusClass(summary.backgrounds?.used || 0, summary.backgrounds?.available || 3)}`}>
+                            {summary.backgrounds?.used || 0} / {summary.backgrounds?.available || 3}
+                        </span>
+                    </div>
+                    <div className="points-bar">
+                        <div 
+                            className={`points-fill ${getStatusClass(summary.backgrounds?.used || 0, summary.backgrounds?.available || 3)}`}
+                            style={{ width: `${Math.min(100, ((summary.backgrounds?.used || 0) / (summary.backgrounds?.available || 3)) * 100)}%` }}
+                        />
+                    </div>
+                    <div className="points-remaining">
+                        {summary.backgrounds?.remaining >= 0 
+                            ? `${summary.backgrounds?.remaining || 0} remaining`
+                            : `${Math.abs(summary.backgrounds?.remaining || 0)} over limit`
+                        }
+                    </div>
+                    <div className="points-note">
+                        {summary.backgrounds?.available || 3} free dots to distribute. Free backgrounds from predator type or sect don't count.
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -175,7 +175,10 @@ CREATE TABLE IF NOT EXISTS sects (
     philosophy TEXT,
     structure TEXT,
     common_clans JSON,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    free_background_id INT,
+    free_background_rating INT DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (free_background_id) REFERENCES backgrounds(id) ON DELETE SET NULL
 );
 
 -- locations table

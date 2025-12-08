@@ -11,6 +11,7 @@ const ATTRIBUTE_POINTS = 7; //distribute among all attributes
 const SKILL_POINTS = 11; //distribute among all skills
 const MERIT_POINTS = 7; //starting points for merits
 const MAX_FLAW_POINTS = 7; //maximum points you can gain from flaws
+const BACKGROUND_POINTS = 3; //free background dots to distribute
 
 //calculate attribute points used
 //in v5, attributes start at 1, and you have 7 points to distribute
@@ -72,6 +73,34 @@ export const calculateFlawPointsGained = (selectedFlaws, flawsData) => {
     
     //cap at maximum
     return Math.min(pointsGained, MAX_FLAW_POINTS);
+};
+
+//calculate background points used
+//in v5, you get 3 free background dots to distribute
+//free backgrounds from predator type or sect don't count
+export const calculateBackgroundPointsUsed = (backgrounds, predatorType, sect) => {
+    let pointsUsed = 0;
+    
+    //get free background IDs
+    const freeBackgroundIds = [];
+    if (predatorType && predatorType.free_background_id) {
+        freeBackgroundIds.push(parseInt(predatorType.free_background_id));
+    }
+    if (sect && sect.free_background_id) {
+        freeBackgroundIds.push(parseInt(sect.free_background_id));
+    }
+    
+    //sum up all background ratings, excluding free ones
+    Object.entries(backgrounds).forEach(([bgId, rating]) => {
+        const id = parseInt(bgId);
+        const value = parseInt(rating) || 0;
+        //only count if not a free background
+        if (!freeBackgroundIds.includes(id)) {
+            pointsUsed += value;
+        }
+    });
+    
+    return pointsUsed;
 };
 
 //calculate total available merit points (base + flaws)
@@ -150,6 +179,15 @@ export const validateCharacterCreation = (characterData, attributesData, skillsD
         warnings.push(`Flaws: Can only gain up to ${MAX_FLAW_POINTS} points from flaws`);
     }
     
+    //check backgrounds
+    const { backgrounds, predatorType, sect } = characterData;
+    if (backgrounds) {
+        const bgPointsUsed = calculateBackgroundPointsUsed(backgrounds, predatorType, sect);
+        if (bgPointsUsed > BACKGROUND_POINTS) {
+            errors.push(`Backgrounds: Used ${bgPointsUsed} dots, but only ${BACKGROUND_POINTS} available`);
+        }
+    }
+    
     return {
         valid: errors.length === 0,
         errors,
@@ -163,12 +201,16 @@ export const getPointsSummary = (characterData, attributesData, skillsData, meri
     const skills = characterData.skills || {};
     const selectedMerits = characterData.selectedMerits || [];
     const selectedFlaws = characterData.selectedFlaws || [];
+    const backgrounds = characterData.backgrounds || {};
+    const predatorType = characterData.predatorType || null;
+    const sect = characterData.sect || null;
     
     const attrPointsUsed = calculateAttributePointsUsed(attributes);
     const skillPointsUsed = calculateSkillPointsUsed(skills);
     const meritPointsUsed = calculateMeritPointsUsed(selectedMerits, meritsData);
     const flawPointsGained = calculateFlawPointsGained(selectedFlaws, flawsData);
     const totalMeritPoints = calculateTotalMeritPoints(selectedFlaws, flawsData);
+    const bgPointsUsed = calculateBackgroundPointsUsed(backgrounds, predatorType, sect);
     
     return {
         attributes: {
@@ -190,6 +232,11 @@ export const getPointsSummary = (characterData, attributesData, skillsData, meri
         flaws: {
             pointsGained: flawPointsGained,
             maxGain: MAX_FLAW_POINTS
+        },
+        backgrounds: {
+            used: bgPointsUsed,
+            available: BACKGROUND_POINTS,
+            remaining: BACKGROUND_POINTS - bgPointsUsed
         }
     };
 };
@@ -202,6 +249,7 @@ export const POINTS_CONSTANTS = {
     ATTRIBUTE_POINTS,
     SKILL_POINTS,
     MERIT_POINTS,
-    MAX_FLAW_POINTS
+    MAX_FLAW_POINTS,
+    BACKGROUND_POINTS
 };
 

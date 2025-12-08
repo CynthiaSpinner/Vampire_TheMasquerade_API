@@ -190,6 +190,20 @@
     color: var(--vtm-white);
 }
 
+.sect-bonus {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: var(--vtm-gray);
+    border: 1px solid var(--vtm-red);
+    border-radius: 4px;
+    color: var(--vtm-white);
+    font-size: 0.95rem;
+}
+
+.sect-bonus strong {
+    color: var(--vtm-bright-red);
+}
+
 .sect-note {
     margin-top: 1rem;
     padding-top: 1rem;
@@ -273,21 +287,59 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    align-items: flex-start;
 }
 
 .attribute-item label {
     color: var(--vtm-white);
     font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0;
 }
 
-.attribute-item input {
-    background-color: var(--vtm-black);
+.item-description {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0.25rem 0;
+    line-height: 1.4;
+    text-align: left;
+    width: 100%;
+}
+
+.attribute-item select {
+    background-color: var(--vtm-dark);
     color: var(--vtm-white);
     border: 1px solid var(--vtm-gray);
     border-radius: 4px;
-    padding: 0.5rem;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 1rem;
-    width: 80px;
+    width: 70px;
+    cursor: pointer;
+    transition: all 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cc0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    align-self: flex-start;
+}
+
+.attribute-item select:hover {
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 5px var(--vtm-glow);
+}
+
+.attribute-item select:focus {
+    outline: none;
+    border-color: var(--vtm-bright-red);
+    box-shadow: 0 0 8px var(--vtm-glow);
+}
+
+.attribute-item select option {
+    background-color: var(--vtm-dark);
+    color: var(--vtm-white);
+    padding: 0.5rem;
 }
 
 /* skills section */
@@ -310,57 +362,125 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    align-items: flex-start;
 }
 
 .skill-item label {
     color: var(--vtm-white);
     font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0;
 }
 
-.skill-item input {
-    background-color: var(--vtm-black);
+.skill-item .item-description {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0.25rem 0;
+    line-height: 1.4;
+    text-align: left;
+    width: 100%;
+}
+
+.skill-item select {
+    background-color: var(--vtm-dark);
     color: var(--vtm-white);
     border: 1px solid var(--vtm-gray);
     border-radius: 4px;
-    padding: 0.5rem;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 1rem;
-    width: 80px;
+    width: 70px;
+    cursor: pointer;
+    transition: all 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cc0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    align-self: flex-start;
+}
+
+.skill-item select:hover {
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 5px var(--vtm-glow);
+}
+
+.skill-item select:focus {
+    outline: none;
+    border-color: var(--vtm-bright-red);
+    box-shadow: 0 0 8px var(--vtm-glow);
+}
+
+.skill-item select option {
+    background-color: var(--vtm-dark);
+    color: var(--vtm-white);
+    padding: 0.5rem;
 }
 
 /* disciplines section */
 .disciplines-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
 }
 
 .discipline-item {
-    background-color: var(--vtm-black);
-    border: 1px solid var(--vtm-gray);
-    border-radius: 4px;
-    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
 }
 
-.discipline-item h4 {
-    color: var(--vtm-bright-red);
-    margin-top: 0;
-    margin-bottom: 0.5rem;
+.discipline-item label {
+    color: var(--vtm-white);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    text-align: left;
+    width: 100%;
 }
 
-.discipline-item p {
+.discipline-item .item-description {
     color: var(--vtm-off-white);
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0.25rem 0;
+    line-height: 1.4;
+    text-align: left;
+    width: 100%;
 }
 
-.discipline-item input {
+.discipline-item select {
     background-color: var(--vtm-dark);
     color: var(--vtm-white);
     border: 1px solid var(--vtm-gray);
     border-radius: 4px;
-    padding: 0.5rem;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 1rem;
-    width: 80px;
+    width: 70px;
+    cursor: pointer;
+    transition: all 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cc0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    align-self: flex-start;
+}
+
+.discipline-item select:hover {
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 5px var(--vtm-glow);
+}
+
+.discipline-item select:focus {
+    outline: none;
+    border-color: var(--vtm-bright-red);
+    box-shadow: 0 0 8px var(--vtm-glow);
+}
+
+.discipline-item select option {
+    background-color: var(--vtm-dark);
+    color: var(--vtm-white);
+    padding: 0.5rem;
 }
 
 /* merits and flaws section */
@@ -427,21 +547,106 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    align-items: flex-start;
 }
 
 .background-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--vtm-white);
     font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0;
+    cursor: pointer;
 }
 
-.background-item input {
-    background-color: var(--vtm-black);
+.background-item input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--vtm-red);
+}
+
+.background-name {
+    font-weight: 500;
+}
+
+.background-rating {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+}
+
+.background-item .item-description {
+    color: var(--vtm-off-white);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0.25rem 0;
+    line-height: 1.4;
+    text-align: left;
+    width: 100%;
+    padding-left: 1.5rem; /* Indent to align with text after checkbox */
+}
+
+.background-free-badge {
+    color: var(--vtm-bright-red);
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 0.25rem;
+}
+
+.background-rating-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.background-rating-selector .rating-label {
+    color: var(--vtm-white);
+    font-size: 0.9rem;
+    margin: 0;
+    cursor: default;
+}
+
+.background-rating-select {
+    background-color: var(--vtm-dark);
     color: var(--vtm-white);
     border: 1px solid var(--vtm-gray);
     border-radius: 4px;
+    padding: 0.4rem 1.5rem 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    width: 60px;
+    cursor: pointer;
+    transition: all 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cc0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.4rem center;
+}
+
+.background-rating-select:hover {
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 5px var(--vtm-glow);
+}
+
+.background-rating-select:focus {
+    outline: none;
+    border-color: var(--vtm-bright-red);
+    box-shadow: 0 0 8px var(--vtm-glow);
+}
+
+.background-rating-select option {
+    background-color: var(--vtm-dark);
+    color: var(--vtm-white);
     padding: 0.5rem;
-    font-size: 1rem;
-    width: 80px;
+}
+
+.background-max {
+    color: var(--vtm-off-white);
+    font-size: 0.8rem;
 }
 
 /* form actions */

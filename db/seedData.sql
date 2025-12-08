@@ -158,12 +158,16 @@ INSERT INTO backgrounds (name, description, max_rating, category) VALUES
 ('Retainers', 'Loyal servants (mortal or ghoul)', 5, 'Social'),
 ('Status', 'Rank in Kindred society (Camarilla, Anarch, etc.)', 5, 'Social');
 
--- sects
-INSERT INTO sects (name, description, philosophy, structure, common_clans) VALUES
-('Camarilla', 'The largest and most organized sect, focused on maintaining the Masquerade and controlling mortal society', 'Maintain secrecy, preserve the Masquerade, control mortal society, follow the Traditions', 'Hierarchical with Princes ruling cities, Primogen councils, and Justicars overseeing regions', '[1, 3, 4, 5, 6, 7, 8]'),
-('Sabbat', 'Radical sect that embraces the Beast and rejects human morality, preparing for Gehenna', 'Embrace the Beast, destroy the Antediluvians, freedom from the Masquerade, war against the Camarilla', 'Military structure with Bishops and Archbishops, packs instead of coteries', '[2, 9, 10]'),
-('Anarch', 'Rebels who reject both Camarilla and Sabbat control, seeking freedom from elders', 'Freedom from elders, self-determination, equality among Kindred, reject the Traditions', 'Loose confederations with Barons ruling territories, democratic coteries', '[1, 2, 8, 9]'),
-('Independent', 'Clans that remain neutral in sect politics', 'Stay out of sect politics, maintain independence, follow own traditions', 'Varies by clan, often loose associations', '[2, 11, 12]');
+-- sects (with free background bonuses)
+INSERT INTO sects (name, description, philosophy, structure, common_clans, free_background_id, free_background_rating) VALUES
+('Camarilla', 'The largest and most organized sect, focused on maintaining the Masquerade and controlling mortal society', 'Maintain secrecy, preserve the Masquerade, control mortal society, follow the Traditions', 'Hierarchical with Princes ruling cities, Primogen councils, and Justicars overseeing regions', '[1, 3, 4, 5, 6, 7, 8]', 
+    (SELECT id FROM backgrounds WHERE name = 'Status' LIMIT 1), 1),
+('Sabbat', 'Radical sect that embraces the Beast and rejects human morality, preparing for Gehenna', 'Embrace the Beast, destroy the Antediluvians, freedom from the Masquerade, war against the Camarilla', 'Military structure with Bishops and Archbishops, packs instead of coteries', '[2, 9, 10]', 
+    NULL, NULL),
+('Anarch', 'Rebels who reject both Camarilla and Sabbat control, seeking freedom from elders', 'Freedom from elders, self-determination, equality among Kindred, reject the Traditions', 'Loose confederations with Barons ruling territories, democratic coteries', '[1, 2, 8, 9]', 
+    NULL, NULL),
+('Independent', 'Clans that remain neutral in sect politics', 'Stay out of sect politics, maintain independence, follow own traditions', 'Varies by clan, often loose associations', '[2, 11, 12]', 
+    NULL, NULL);
 
 -- predator types (each gives free dots in disciplines, skills, or backgrounds)
 -- using subqueries to look up IDs by name to avoid foreign key constraint errors
