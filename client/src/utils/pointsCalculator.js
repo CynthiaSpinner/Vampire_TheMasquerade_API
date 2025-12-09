@@ -33,13 +33,28 @@ export const calculateAttributePointsUsed = (attributes, favoredCategory) => {
 
 //calculate skill points used
 //in v5, skills start at 0, and you spend points equal to the rating
-export const calculateSkillPointsUsed = (skills, favoredCategory) => {
+//free skill dots from predator types don't count
+export const calculateSkillPointsUsed = (skills, predatorType = null) => {
     let pointsUsed = 0;
     
+    //get free skill ID from predator type if it exists
+    const freeSkillId = predatorType && predatorType.free_skill_id 
+        ? parseInt(predatorType.free_skill_id) 
+        : null;
+    
     Object.entries(skills).forEach(([skillId, rating]) => {
+        const id = parseInt(skillId);
         const value = parseInt(rating) || STARTING_SKILL_VALUE;
-        //cost is the rating value (1 costs 1, 2 costs 2, etc.)
-        pointsUsed += value;
+        
+        //if this is the free skill from predator type, subtract 1 from the cost
+        //(the free dot doesn't count against points)
+        if (freeSkillId && id === freeSkillId && value > 0) {
+            //only subtract 1 (the free dot), any additional dots cost points
+            pointsUsed += Math.max(0, value - 1);
+        } else {
+            //cost is the rating value (1 costs 1, 2 costs 2, etc.)
+            pointsUsed += value;
+        }
     });
     
     return pointsUsed;
@@ -59,15 +74,17 @@ export const calculateMeritPointsUsed = (selectedMerits, meritsData) => {
     return pointsUsed;
 };
 
-//calculate flaw points gained (negative cost)
+//calculate flaw points gained
+//flaws have negative costs in database (e.g., -1, -2) but give positive merit points
 export const calculateFlawPointsGained = (selectedFlaws, flawsData) => {
     let pointsGained = 0;
     
     selectedFlaws.forEach(flawId => {
         const flaw = flawsData.find(f => f.id === parseInt(flawId));
         if (flaw) {
-            //flaws give points (cost is positive, but we gain points)
-            pointsGained += flaw.cost || 1;
+            //flaws give points - use absolute value since costs are stored as negative
+            const flawValue = Math.abs(flaw.cost || 1);
+            pointsGained += flawValue;
         }
     });
     
@@ -119,6 +136,7 @@ export const validateCharacterCreation = (characterData, attributesData, skillsD
     //get clan info for favored category
     const clan = characterData.clan || null;
     const favoredCategory = clan?.favored_attributes || null;
+    const predatorType = characterData.predatorType || null;
     
     //check attributes
     const attrPointsUsed = calculateAttributePointsUsed(attributes, favoredCategory);
@@ -143,8 +161,8 @@ export const validateCharacterCreation = (characterData, attributesData, skillsD
         }
     }
     
-    //check skills
-    const skillPointsUsed = calculateSkillPointsUsed(skills, favoredCategory);
+    //check skills (exclude free skill dot from predator type)
+    const skillPointsUsed = calculateSkillPointsUsed(skills, predatorType);
     if (skillPointsUsed > SKILL_POINTS) {
         errors.push(`Skills: Used ${skillPointsUsed} points, but only ${SKILL_POINTS} available`);
     }
@@ -180,7 +198,7 @@ export const validateCharacterCreation = (characterData, attributesData, skillsD
     }
     
     //check backgrounds
-    const { backgrounds, predatorType, sect } = characterData;
+    const { backgrounds, sect } = characterData;
     if (backgrounds) {
         const bgPointsUsed = calculateBackgroundPointsUsed(backgrounds, predatorType, sect);
         if (bgPointsUsed > BACKGROUND_POINTS) {
@@ -206,7 +224,7 @@ export const getPointsSummary = (characterData, attributesData, skillsData, meri
     const sect = characterData.sect || null;
     
     const attrPointsUsed = calculateAttributePointsUsed(attributes);
-    const skillPointsUsed = calculateSkillPointsUsed(skills);
+    const skillPointsUsed = calculateSkillPointsUsed(skills, predatorType);
     const meritPointsUsed = calculateMeritPointsUsed(selectedMerits, meritsData);
     const flawPointsGained = calculateFlawPointsGained(selectedFlaws, flawsData);
     const totalMeritPoints = calculateTotalMeritPoints(selectedFlaws, flawsData);

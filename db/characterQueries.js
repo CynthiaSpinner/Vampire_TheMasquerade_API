@@ -82,6 +82,31 @@ const createCharacter = async (characterData) => {
         willpower_max, willpower_current, humanity, hunger 
     } = characterData;
 
+    //helper function to calculate age from date of birth to a specific year
+    const calculateAge = (dateOfBirth, targetYear = null) => {
+        if (!dateOfBirth) return null;
+        
+        const birthDate = new Date(dateOfBirth);
+        const target = targetYear ? new Date(targetYear, 0, 1) : new Date();
+        
+        let age = target.getFullYear() - birthDate.getFullYear();
+        const monthDiff = target.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && target.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        return age;
+    };
+
+    //calculate true_age (current age from date_of_birth)
+    const calculatedTrueAge = date_of_birth ? calculateAge(date_of_birth) : null;
+    
+    //calculate apparent_age (age at time of embrace)
+    const calculatedApparentAge = (date_of_birth && embrace_date) 
+        ? calculateAge(date_of_birth, new Date(embrace_date).getFullYear())
+        : null;
+
     const [result] = await pool.query(`
         INSERT INTO characters (
             name, player_name, chronicle, concept,
@@ -92,10 +117,11 @@ const createCharacter = async (characterData) => {
             health_max, health_current,
             willpower_max, willpower_current,
             humanity, hunger
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,[
-        name, player_name, chronicle, concept,
-        clan_id, generation || 13, sire, embrace_date, date_of_birth, place_of_birth, apparent_age, true_age,
+        name, player_name || null, chronicle || null, concept || null,
+        clan_id || null, generation || 13, sire || null, embrace_date || null, date_of_birth || null, place_of_birth || null, 
+        calculatedApparentAge, calculatedTrueAge,
         strength || 1, dexterity || 1, stamina || 1,
         charisma || 1, manipulation || 1, composure || 1,
         intelligence || 1, wits || 1, resolve || 1,

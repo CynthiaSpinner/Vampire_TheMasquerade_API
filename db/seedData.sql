@@ -9,7 +9,7 @@ INSERT INTO attributes (category, name, description) VALUES
 ('Physical', 'Strength', 'Raw physical power and ability to lift, carry, and exert force'),
 ('Physical', 'Dexterity', 'Agility, reflexes, and coordination'),
 ('Physical', 'Stamina', 'Endurance, resilience, and ability to resist damage'),
-('Social', 'Charisma', 'Personal magnetism, leadership, and ability to inspire'),
+('Social', 'Charisma', 'Personal magnetism, physical attractiveness, leadership, and ability to inspire'),
 ('Social', 'Manipulation', 'Ability to influence and persuade others'),
 ('Social', 'Composure', 'Self-control, poise, and ability to remain calm'),
 ('Mental', 'Intelligence', 'Reasoning, memory, and ability to learn'),

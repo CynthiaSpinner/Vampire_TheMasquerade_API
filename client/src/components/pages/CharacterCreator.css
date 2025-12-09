@@ -437,6 +437,35 @@
     margin-bottom: 0;
     text-align: left;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.discipline-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.clan-badge {
+    background-color: var(--vtm-red);
+    color: var(--vtm-white);
+}
+
+.predator-badge {
+    background-color: var(--vtm-bright-red);
+    color: var(--vtm-white);
+}
+
+.discipline-summary {
+    color: var(--vtm-white);
+    font-size: 0.9rem;
+}
+
+.discipline-summary strong {
+    color: var(--vtm-bright-red);
 }
 
 .discipline-item .item-description {

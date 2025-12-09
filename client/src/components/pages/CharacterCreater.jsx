@@ -4,6 +4,7 @@ import { characterAPI, worldAPI } from '../../api';
 import { getTimePeriodContext } from '../../utils/characterhelpers';
 import { validateCharacterCreation } from '../../utils/pointsCalculator';
 import PointsDisplay from '../PointsDisplay';
+import SectionPointsDisplay from '../SectionPointsDisplay';
 import CharacterCreationGuide from '../CharacterCreationGuide';
 import './CharacterCreator.css';
 
@@ -28,9 +29,7 @@ function CharacterCreator() {
         date_of_birth: '',   
         place_of_birth: '',      
         embrace_date: '',        
-        sire: '',                
-        apparent_age: '',        
-        true_age: ''      
+        sire: ''      
     });
 
     //world data
@@ -305,12 +304,20 @@ function CharacterCreator() {
                     }));
                 }
                 
-                //apply free skill dot
+                //apply free skill dot (only if skill is currently 0, don't add to existing)
                 if (selectedPredator.free_skill_id) {
-                    setCharacterSkills(prev => ({
-                        ...prev,
-                        [selectedPredator.free_skill_id]: (prev[selectedPredator.free_skill_id] || 0) + 1
-                    }));
+                    setCharacterSkills(prev => {
+                        const currentValue = prev[selectedPredator.free_skill_id] || 0;
+                        //only set to 1 if it's currently 0 (free dot), don't add to existing value
+                        if (currentValue === 0) {
+                            return {
+                                ...prev,
+                                [selectedPredator.free_skill_id]: 1
+                            };
+                        }
+                        //if already 1 or higher, leave it as is (the calculation will handle the free dot)
+                        return prev;
+                    });
                 }
                 
                     //apply free background
@@ -393,6 +400,8 @@ function CharacterCreator() {
 
         //validate character creation points
         const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+        const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+        const selectedSect = sects.find(s => s.name === formData.sect);
         const validation = validateCharacterCreation(
             {
                 attributes: characterAttributes,
@@ -401,7 +410,7 @@ function CharacterCreator() {
                 selectedFlaws,
                 backgrounds: characterBackgrounds,
                 clan: selectedClan,
-                predatorType: predatorTypes.find(pt => pt.id === parseInt(formData.predator_type)),
+                predatorType: selectedPredatorType,
                 sect: selectedSect
             },
             attributes,
@@ -429,12 +438,26 @@ function CharacterCreator() {
         }
 
         try {
+            //map attributes to the correct fields for creation
+            const attrMap = {};
+            Object.entries(characterAttributes).forEach(([attrId, rating]) => {
+                const attr = attributes.find(a => a.id === parseInt(attrId));
+                if (attr) {
+                    if (attr.name === 'Strength') attrMap.strength = rating;
+                    else if (attr.name === 'Dexterity') attrMap.dexterity = rating;
+                    else if (attr.name === 'Stamina') attrMap.stamina = rating;
+                    else if (attr.name === 'Charisma') attrMap.charisma = rating;
+                    else if (attr.name === 'Manipulation') attrMap.manipulation = rating;
+                    else if (attr.name === 'Composure') attrMap.composure = rating;
+                    else if (attr.name === 'Intelligence') attrMap.intelligence = rating;
+                    else if (attr.name === 'Wits') attrMap.wits = rating;
+                    else if (attr.name === 'Resolve') attrMap.resolve = rating;
+                }
+            });
+
             const characterData = {
                 ...formData,
-                attributes: Object.entries(characterAttributes).map(([id, rating]) => ({
-                    attribute_id: parseInt(id),
-                    rating: rating
-                })),
+                ...attrMap,
                 skills: Object.entries(characterSkills)
                     .filter(([id, rating]) => rating > 0)
                     .map(([id, rating]) => ({
@@ -445,7 +468,7 @@ function CharacterCreator() {
                     .filter(([id, rating]) => rating > 0)
                     .map(([id, rating]) => ({
                         discipline_id: parseInt(id),
-                        level: rating
+                        rating: rating
                     })),
                 merits: selectedMerits.map(id => ({ merit_id: parseInt(id) })),
                 flaws: selectedFlaws.map(id => ({ flaw_id: parseInt(id) })),
@@ -806,7 +829,33 @@ function CharacterCreator() {
 
                 {/* Attributes Section */}
                 <section className="form-section">
-                    <h2>Attributes</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Attributes</h2>
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const selectedSect = sects.find(s => s.name === formData.sect);
+                            return (
+                                <SectionPointsDisplay
+                                    sectionType="attributes"
+                                    characterData={{
+                                        attributes: characterAttributes,
+                                        skills: characterSkills,
+                                        selectedMerits,
+                                        selectedFlaws,
+                                        backgrounds: characterBackgrounds,
+                                        clan: selectedClan,
+                                        predatorType: selectedPredatorType,
+                                        sect: selectedSect
+                                    }}
+                                    attributesData={attributes}
+                                    skillsData={skills}
+                                    meritsData={merits}
+                                    flawsData={flaws}
+                                />
+                            );
+                        })()}
+                    </div>
                     {Object.entries(attributesByCategory).map(([category, attrs]) => (
                         <div key={category} className="attribute-category">
                             <h3>{category}</h3>
@@ -837,7 +886,33 @@ function CharacterCreator() {
 
                 {/* Skills Section */}
                 <section className="form-section">
-                    <h2>Skills</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Skills</h2>
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const selectedSect = sects.find(s => s.name === formData.sect);
+                            return (
+                                <SectionPointsDisplay
+                                    sectionType="skills"
+                                    characterData={{
+                                        attributes: characterAttributes,
+                                        skills: characterSkills,
+                                        selectedMerits,
+                                        selectedFlaws,
+                                        backgrounds: characterBackgrounds,
+                                        clan: selectedClan,
+                                        predatorType: selectedPredatorType,
+                                        sect: selectedSect
+                                    }}
+                                    attributesData={attributes}
+                                    skillsData={skills}
+                                    meritsData={merits}
+                                    flawsData={flaws}
+                                />
+                            );
+                        })()}
+                    </div>
                     {Object.entries(skillsByCategory).map(([category, skillList]) => (
                         <div key={category} className="skill-category">
                             <h3>{category}</h3>
@@ -869,32 +944,109 @@ function CharacterCreator() {
                 {/* Disciplines Section */}
                 <section className="form-section">
                     <h2>Disciplines</h2>
+                    <p className="form-helper-text" style={{ marginBottom: '1rem' }}>
+                        You start with <strong>1 dot in each of your clan's 3 disciplines</strong> (free). 
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            if (selectedClan && selectedClan.clan_disciplines) {
+                                const clanDiscIds = Array.isArray(selectedClan.clan_disciplines) 
+                                    ? selectedClan.clan_disciplines 
+                                    : JSON.parse(selectedClan.clan_disciplines || '[]');
+                                const clanDiscNames = clanDiscIds
+                                    .map(id => disciplines.find(d => d.id === id)?.name)
+                                    .filter(Boolean);
+                                if (clanDiscNames.length > 0) {
+                                    return ` Your clan disciplines: ${clanDiscNames.join(', ')}.`;
+                                }
+                            }
+                            return '';
+                        })()}
+                        {(() => {
+                            const currentPredator = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            if (currentPredator && currentPredator.free_discipline_name) {
+                                return ` Your predator type also gives +1 ${currentPredator.free_discipline_name}.`;
+                            }
+                            return '';
+                        })()}
+                        {' '}Additional discipline dots cost experience points (not during creation).
+                    </p>
                     <div className="disciplines-grid">
-                        {disciplines.map(disc => (
-                            <div key={disc.id} className="discipline-item">
-                                <label htmlFor={`disc-${disc.id}`}>
-                                    {disc.name}
-                                </label>
-                                {disc.description && (
-                                    <p className="item-description">{disc.description}</p>
-                                )}
-                                <select
-                                    id={`disc-${disc.id}`}
-                                    value={characterDisciplines[disc.id] || 0}
-                                    onChange={(e) => handleDisciplineChange(disc.id, e.target.value)}
-                                >
-                                    {[0, 1, 2, 3, 4, 5].map(val => (
-                                        <option key={val} value={val}>{val}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        ))}
+                        {disciplines.map(disc => {
+                            const rating = characterDisciplines[disc.id] || 0;
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const isClanDiscipline = selectedClan && selectedClan.clan_disciplines ? 
+                                (() => {
+                                    const clanDiscIds = Array.isArray(selectedClan.clan_disciplines) 
+                                        ? selectedClan.clan_disciplines 
+                                        : JSON.parse(selectedClan.clan_disciplines || '[]');
+                                    return clanDiscIds.includes(disc.id);
+                                })() : false;
+                            const currentPredator = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const isPredatorBonus = currentPredator && currentPredator.free_discipline_id === disc.id;
+                            
+                            return (
+                                <div key={disc.id} className="discipline-item">
+                                    <label htmlFor={`disc-${disc.id}`}>
+                                        {disc.name}
+                                        {isClanDiscipline && rating > 0 && (
+                                            <span className="discipline-badge clan-badge">(Clan)</span>
+                                        )}
+                                        {isPredatorBonus && rating > 0 && (
+                                            <span className="discipline-badge predator-badge">(Predator)</span>
+                                        )}
+                                    </label>
+                                    {disc.description && (
+                                        <p className="item-description">{disc.description}</p>
+                                    )}
+                                    <select
+                                        id={`disc-${disc.id}`}
+                                        value={rating}
+                                        onChange={(e) => handleDisciplineChange(disc.id, e.target.value)}
+                                    >
+                                        {[0, 1, 2, 3, 4, 5].map(val => (
+                                            <option key={val} value={val}>{val}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="discipline-summary" style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--vtm-gray)', borderRadius: '4px' }}>
+                        <strong>Total Discipline Dots:</strong> {
+                            Object.values(characterDisciplines).reduce((sum, rating) => sum + (parseInt(rating) || 0), 0)
+                        } / 3-4 (3 from clan + 0-1 from predator type)
                     </div>
                 </section>
 
                 {/* Merits Section */}
                 <section className="form-section">
-                    <h2>Merits</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Merits</h2>
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const selectedSect = sects.find(s => s.name === formData.sect);
+                            return (
+                                <SectionPointsDisplay
+                                    sectionType="merits"
+                                    characterData={{
+                                        attributes: characterAttributes,
+                                        skills: characterSkills,
+                                        selectedMerits,
+                                        selectedFlaws,
+                                        backgrounds: characterBackgrounds,
+                                        clan: selectedClan,
+                                        predatorType: selectedPredatorType,
+                                        sect: selectedSect
+                                    }}
+                                    attributesData={attributes}
+                                    skillsData={skills}
+                                    meritsData={merits}
+                                    flawsData={flaws}
+                                />
+                            );
+                        })()}
+                    </div>
                     <div className="merits-flaws-grid">
                         {merits.map(merit => (
                             <div key={merit.id} className="merit-flaw-item">
@@ -917,7 +1069,33 @@ function CharacterCreator() {
 
                 {/* Flaws Section */}
                 <section className="form-section">
-                    <h2>Flaws</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Flaws</h2>
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const selectedSect = sects.find(s => s.name === formData.sect);
+                            return (
+                                <SectionPointsDisplay
+                                    sectionType="flaws"
+                                    characterData={{
+                                        attributes: characterAttributes,
+                                        skills: characterSkills,
+                                        selectedMerits,
+                                        selectedFlaws,
+                                        backgrounds: characterBackgrounds,
+                                        clan: selectedClan,
+                                        predatorType: selectedPredatorType,
+                                        sect: selectedSect
+                                    }}
+                                    attributesData={attributes}
+                                    skillsData={skills}
+                                    meritsData={merits}
+                                    flawsData={flaws}
+                                />
+                            );
+                        })()}
+                    </div>
                     <div className="merits-flaws-grid">
                         {flaws.map(flaw => (
                             <div key={flaw.id} className="merit-flaw-item">
@@ -940,7 +1118,33 @@ function CharacterCreator() {
 
                 {/* Backgrounds Section */}
                 <section className="form-section">
-                    <h2>Backgrounds</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>Backgrounds</h2>
+                        {(() => {
+                            const selectedClan = clans.find(c => c.id === parseInt(formData.clan_id));
+                            const selectedPredatorType = predatorTypes.find(pt => pt.id === parseInt(formData.predator_type));
+                            const selectedSect = sects.find(s => s.name === formData.sect);
+                            return (
+                                <SectionPointsDisplay
+                                    sectionType="backgrounds"
+                                    characterData={{
+                                        attributes: characterAttributes,
+                                        skills: characterSkills,
+                                        selectedMerits,
+                                        selectedFlaws,
+                                        backgrounds: characterBackgrounds,
+                                        clan: selectedClan,
+                                        predatorType: selectedPredatorType,
+                                        sect: selectedSect
+                                    }}
+                                    attributesData={attributes}
+                                    skillsData={skills}
+                                    meritsData={merits}
+                                    flawsData={flaws}
+                                />
+                            );
+                        })()}
+                    </div>
                     <p className="form-helper-text" style={{ marginBottom: '1rem' }}>
                         You have <strong>3 free background dots</strong> to distribute. Each background can have a rating from 1 to {Math.max(...backgrounds.map(bg => bg.max_rating || 5))}. 
                         Free backgrounds from predator type or sect don't count against your 3 dots.
